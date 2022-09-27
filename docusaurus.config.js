@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'OCP on Nutanix',
   tagline: 'OCP is the easiest on Nutanix',
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://dsl.howntnx.win',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',

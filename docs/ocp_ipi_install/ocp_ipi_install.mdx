@@ -560,7 +560,7 @@ In this section we will create our installation configuration files which will b
    ```bash
    vi install-config.yaml
    ```
-   ```yml {4-15,21,37} title="Sample install-config.yaml file. You can also reduce the number of workers to 2"
+   ```yml {4-13,19,35} title="Sample install-config.yaml file. You can also reduce the number of workers to 2"
    apiVersion: v1
    baseDomain: ntnxlab.local
    additionalTrustBundle: | 
@@ -659,7 +659,7 @@ This will be simplest part of all, provided you have done everything correctly t
    ```bash 
    openshift-install create cluster 
    ```
-   :::tip 
+   :::tip Want more details about the installation?
    if you would like to see debug details and be able to capture logs, and also have access to the console, execute the following command:
 
    ```bash 

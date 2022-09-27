@@ -1,0 +1,707 @@
+---
+title: "OCP: IPI Installation"
+---
+
+# OCP: IPI Installation
+
+OCP Installer Provisioned Installation (IPI) has been released in August 2022. It gives cusotmer a intutive and easy way to deploy OCP cluster on Nutanix AOS.
+
+In this lab we will go through the steps of deploying OCP cluster using IPI.
+
+:::info
+
+Estimated time to complete this lab is 60 minutes.
+
+:::
+
+:::info
+
+Although it might seem like a lot of work for IPI, the aim of the lab is to take you through the one-time process a customer would go through. Once pre-requisites are set, customers can deploy as many number of OCP clusters.
+
+You could also explore automating these one time pre-requisites preparation tasks using automation frameworks like Nutanix **NCM**.
+
+:::
+
+## Pre-requisites
+
+The following pre-requisites are necessary:
+
+- Access to RedHat Console to download the following    
+  - Pull secret
+  - IPI installation binaries
+  - Openshift access tools (oc, kubectl)
+  - Cloud Credential Operator (CCOCTL) utility  binaries
+- An SSL certificate for Prism Central signed by a Certification Authority (we will also create certificates in this lab)
+- Networking requirements
+  - AHV IPAM Network (your HPOC already has this)
+  - DNS server (Windows AutoAD VM is deployed for DNS capabilities)
+  - Static IP addresses in your AHV IPAM network for OCP's api and apps endpoints 
+
+## High Level Plan
+
+1. Prepare pre-requiisites
+   - AHV Networking and DNS
+   - OCP tools 
+2. Prepare and install SSL certificate for Prism Central
+3. Creating OCP IPI installation manifest files  
+4. Installing OCP cluster and first login
+
+## Preparing Pre-requisites
+
+We will be doing this lab 
+
+### Preparing your HPOC cluster
+
+:::caution
+
+If you are working on a HPOC cluster, make sure there are enough resources available to deploy a new OCP cluster.
+
+Remove existing OCP clusters that you dont require anymore.
+
+For latest OCP resource requirements refer to OpenShift portal [here.](https://docs.openshift.com/container-platform/4.9/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-minimum-resource-requirements_installing-platform-agnostic)
+
+:::
+
+#### AHV Networking 
+
+We will first find two IPs for OCP ``api`` and ``apps`` ingress endpoints in our network and add it to the **Primary** IPAM network blacklist. 
+
+
+1. Find the CIDR range for your  **Primary** IPAM network either from [RX](https://rx.corp.nutanix.com/) or from your instrutor
+
+   ```bash title="CIDR example for your Nutanix cluster"
+   10.38.18.192/26
+   ```
+
+2. Logon to your UserXX-LinuxToolsVM using Mac Terminal or Windows Putty 
+
+   - Username: root
+   - Password: default 
+
+3. Prepare the UserXX-LinuxToolsVM 
+   
+   ```bash
+   yum update -y
+   yum install -y nmap
+   ```
+
+3. Find two unused static IP addresses
+
+   ```bash
+   nmap -v -sn  <your CIDR>
+   ```
+   ```bash title="Sample command"
+   nmap -v -sn 10.38.18.192/26
+
+   ```
+   ```bash {1,2} title="Sample output - choose the first two consecutive IPs"
+   Nmap scan report for 10.38.18.219 [host down] 
+   Nmap scan report for 10.38.18.220 [host down]
+   Nmap scan report for 10.38.18.221
+   Host is up (-0.098s latency).
+   ```
+
+2. Logon to any CVM in your cluster and execute the following to add chosen static IPs to the **Primary** IPAM network
+
+   - Username: nutanix
+   - Password: your cluster password 
+   
+   ```bash
+   acli net.add_to_ip_blacklist Primary ip_list=10.38.18.219,10.38.18.220
+   ```
+
+### Add DNS Records
+
+In this section we will add PC, API and APPS Ingress DNS records for lookup by OCP IPI installer 
+
+1. Logon to the AutoAD windows VM 
+
+   - Username: administrator
+   - Password: default
+
+2. We will add the following entries to DNS server using the two consecutive IPs you found in the previous section
+   
+   ```buttonless
+   10.38.18.219   api.your_ocp_cluster_subdomain.ntnxlab.local
+   10.38.18.220   *.apps.your_ocp_cluster_subdomain.ntnxlab.local
+   10.38.18.201   pc.ntnxlab.local
+   ```
+
+2. Open PowerShell as Administrator and create the two A records
+
+   ```PowerShell title="Add the API A record - use your own subdomain"
+   Add-DnsServerResourceRecordA -Name api.<your_ocp_cluster_subdomain> -IPv4Address 10.38.18.219 -ZoneName ntnxlab.local -ZoneScope ntnxlab.local
+   ```
+   ```PowerShell title="Add the apps Ingress A record - use your own subdomain"
+   Add-DnsServerResourceRecordA -Name *.apps.api.<your_ocp_cluster_subdomain> -IPv4Address 10.38.18.220 -ZoneName ntnxlab.local -ZoneScope ntnxlab.local 
+   ```
+   ```PowerShell title="Add the Prism Central A record"
+   Add-DnsServerResourceRecordA -Name pc -IPv4Address <your PC IP> -ZoneName ntnxlab.local -ZoneScope ntnxlab.local 
+   ```
+
+   ```buttonless title="Sample commands with 'xyz' as a subdomain and your OCP cluster name"
+   Add-DnsServerResourceRecordA -Name api.xyz -IPv4Address 10.38.18.219 -ZoneName ntnxlab.local -ZoneScope ntnxlab.local
+   Add-DnsServerResourceRecordA -Name *.apps.xyz -IPv4Address 10.38.18.220 -ZoneName ntnxlab.local -ZoneScope ntnxlab.local 
+   Add-DnsServerResourceRecordA -Name pc -IPv4Address 10.38.18.201 -ZoneName ntnxlab.local -ZoneScope ntnxlab.local
+   ```
+
+3. Test name resolution for added entries
+
+   ```PowerShell {6,13}
+   nslookup api.xyz.ntnxlab.local
+   Server:  dc.ntnxlab.local
+   Address:  10.38.3.75
+
+   Name:    api.xyz.ntnxlab.local
+   Address:  10.38.3.109 
+   #
+   nslookup myapp.apps.xyz.ntnxlab.local
+   Server:  dc.ntnxlab.local
+   Address:  10.38.3.75
+
+   Name:    myapp.apps.xyz.ntnxlab.local
+   Address:  10.38.3.110 
+   ```
+
+### Downloading OCP Tools 
+
+We will need to the OCP tools mentioned in the pre-requisites section to prepare our environment
+
+:::info
+
+You can get the URLs to download the tools and pull secret from RedHat Console: 
+
+Openshift > Clusters > Create Clusters > Datacenter > [Nutanix AOS](https://console.redhat.com/openshift/install/nutanix/installer-provisioned)
+
+:::
+
+
+1. Logon to UserXX-LinuxToolsVM and download the binaries
+
+   - Username: root
+   - Password: default 
+
+   ```bash
+   mkdir xyz
+   cd xyz
+   curl -O https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-install-linux.tar.gz
+   curl -O https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz 
+   ```
+
+2. Extract the binaries and copy them to ``/usr/local/bin`` for pathless access
+   
+   ```bash
+   tar xvf openshift-install-linux.tar.gz
+   tar xvf openshift-client-linux.tar.gz 
+   # Add to path 
+   cp kubectl /usr/local/bin
+   cp oc /usr/local/bin
+   cp openshift-install /usr/local/bin
+   ```
+2. Go to the [IPI Installer Web Console](https://console.redhat.com/openshift/install/nutanix/installer-provisioned) and click on **Copy pull secret** button
+
+3. Now that the pull secret value is in your clipboard, paste the contents string to a pull secret file in the same directory
+
+   ```bash
+   echo "paste copied pull secret content here" > pull_secret.json
+   ```
+4. Make sure all the files are in the xyz directory 
+
+   ```bash
+   ls -l 
+   ```
+   ```bash {5} title="Directory listing"
+   -rwxr-xr-x 2 root root 123877776 Aug 29 16:30 kubectl
+   -rwxr-xr-x 2 root root 123877776 Aug 29 16:30 oc
+   drwxr-x--- 2 root root      4096 Sep 22 06:56 openshift
+   -rwxr-xr-x 1 root root 481972224 Sep  1 16:07 openshift-install
+   -rw-r--r-- 1 root root      2819 Sep 22 05:27 pull_secret.json
+   ```
+
+### Setting up Cloud Credential Operator Utility (CCOCTL)
+
+Setting up of is necessary for Nutanix cluster credentials to be used with OCP cluster. 
+
+Refer to [Cloud Credential Operator CCO](https://docs.openshift.com/container-platform/4.7/authentication/managing_cloud_provider_credentials/about-cloud-credential-operator.html) for more information. 
+
+1. In the UserXX-LinuxToolsVM, download and setup ``ccoctl`` using the following commands
+
+   ```bash
+   RELEASE_IMAGE=$(openshift-install version | awk '/release image/ {print $3}')
+
+   CCO_IMAGE=$(oc adm release info --image-for='cloud-credential-operator' $RELEASE_IMAGE)
+
+   oc image extract $CCO_IMAGE --file="/usr/bin/ccoctl" -a pull_secret.json
+
+   chmod u+x ccoctl && cp ccoctl /usr/local/bin/ 
+   ```
+2. Make sure the ccoctl file is present 
+
+   ```bash
+   ls -l ccoctl 
+   -rwxr-x--x 1 root root  72158183 Aug 29 16:33 ccoctl
+   ```
+3. Create a Prism Central credentials file
+
+   ```bash {7}
+   cat << EOF > pc_credentials.yaml
+   credentials:
+   - type: basic_auth
+     data:
+       prismCentral:
+         username: "admin"
+         password: "PC-PASSWORD"
+   EOF
+   ```
+
+4. Edit the ``pc_credentials.yaml`` file to include your password
+
+   ```bash
+   vi pc_credentials.yaml
+   ```
+
+4. Extract the CredentialsRequests objects for Nutanix Prism Central and store in a ``credreqs`` directory
+
+   ```bash
+   oc adm release extract --credentials-requests --cloud=nutanix --to=credreqs -a pull_secret.json $RELEASE_IMAGE
+   ```
+
+5. Use the ccoctl tool to process the CredentialsRequests objects and generate secret manifest files. These manifests file will be used during OCP cluster Certification
+
+   ```bash
+   ccoctl nutanix create-shared-secrets --credentials-requests-dir=credreqs --output-dir=. --credentials-source-filepath=pc_credentials.yaml
+   ```
+   ```buttonless title="Ouput"
+   2022/09/29 23:53:36 Saved credentials configuration to: manifests/openshift-machine-api-nutanix-credentials-credentials.yaml
+   ```
+
+6. Check the ``manifests/openshift-machine-api-nutanix-credentials-credentials.yaml`` file to make sure the contents are good
+
+   ```buttonless {8}
+   apiVersion: v1
+   kind: Secret
+   metadata:
+      name: nutanix-credentials
+      namespace: openshift-machine-api
+   type: Opaque
+   data:
+      credentials: W3sidHlwZSI6ImJhc2ljX2F1dGgiLCJkYXRhIjp7InByaXNtQ2VudHJhbCI6eyJ1c2VybmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiJ0ZWNoWDIwMjAhIn0sInByaXNtRWxlbWVudHMiOm51bGx9fV0=
+   ```
+
+### Creating and Installing SSL Certificate on Prism Central
+
+In this section we will do the following:
+
+- Create a Root CA on your UserXX-LinuxToolsVM
+- Create a Certificate Signing Request (CSR) for Prism Central 
+- Sign the CSR using Root CA's private key
+
+All this will be done on the UserXX-LinuxToolsVM.
+
+1. In the UserXX-LinuxToolsVM, Create a the Root CA certificates
+
+   ```bash
+   openssl genrsa -out rootCA.key 2048
+   openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt
+   ```
+   ```bash title="Execution example - make sure to retype the input values as shown here"
+   openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt
+   ##
+   You are about to be asked to enter information that will be incorporated
+   into your certificate request.
+   What you are about to enter is what is called a Distinguished Name or a DN.
+   There are quite a few fields but you can leave some blank
+   For some fields there will be a default value,
+   If you enter '.', the field will be left blank.
+   -----
+   Country Name (2 letter code) [XX]:JP
+   State or Province Name (full name) []:Chiba
+   Locality Name (eg, city) [Default City]:Kashiwa
+   Organization Name (eg, company) [Default Company Ltd]:nutanix
+   Organizational Unit Name (eg, section) []:rootca
+   Common Name (eg, your name or your server's hostname) []:rootca.ntnxlab.local
+   Email Address []:first.last@nutanix.com
+   ```
+   
+2. Create an answer file for Prism Central's certificate parameters. Feel free to change your country, state and locality names.
+
+   ```bash
+   cat << EOF > pc.conf
+   [ req ]
+   default_bits       = 2048
+   distinguished_name = req_distinguished_name
+   req_extensions     = req_ext
+   [ req_distinguished_name ]
+   countryName = JP
+   stateOrProvinceName = Chiba
+   localityName = Kashiwa
+   organizationName = pc
+   commonName = ntnxlab.local
+   [ req_ext ]
+   subjectAltName = @alt_names
+   [alt_names]
+   DNS.1   = pc.ntnxlab.local
+   DNS.2   = prism.ntnxlab.local
+   EOF
+   ```
+3. Create the private key and CSR for Prism Central
+  
+   ```bash
+   openssl genrsa -out pc.key 2048
+   openssl req -new -sha256  -key pc.key -config ./pc.conf -out pc.csr
+   ```
+   ```bash title="Execution example - make sure to retype the input values as shown here"
+   openssl req -new -sha256  -key pc.key -config ./pc.conf -out pc.csr
+   ##
+   You are about to be asked to enter information that will be incorporated
+   into your certificate request.
+   What you are about to enter is what is called a Distinguished Name or a DN.
+   There are quite a few fields but you can leave some blank
+   For some fields there will be a default value,
+   If you enter '.', the field will be left blank.
+   -----
+   JP []:JP
+   Chiba []:Chiba
+   Kashiwa []:Kashiwa
+   pc []:pc
+   ntnxlab.local []:ntnxlab.local
+   ```
+
+4. Get your Prism Central's  DNS details from the CSR you created
+
+   ```bash
+   openssl req -noout -text -in pc.csr | grep DNS
+   ```
+   ```bash title="Output"
+   DNS:pc.ntnxlab.local, DNS:prism.ntnxlab.local
+   ```
+
+5. Create a file called pctext to store the DNS/SAN names
+
+   ```bash
+   echo "subjectAltName = DNS:pc.ntnxlab.local, DNS:prism.ntnxlab.local" >> pctext
+   ```
+6. Sign the CSR using rootCA's private key and produce a certificate for Prism Central
+
+   ```bash
+   openssl x509 -req -in pc.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out pc.crt -days 1024 -sha256 -extfile pctext
+   ```
+
+7. List the contents of the directory to make sure pc.crt, pc.key and rootCA.crt files are present
+
+   ```bash
+   ls -l *.crt *.key | awk '{print $9}'
+   ```
+   ```bash title="Output"
+   pc.crt               ## Prism Central's public certificate signed by Root CA
+   pc.key               ## Prism Central's private key
+   rootCA.crt           ## Root CA's public certificate
+   rootCA.key           ## Root CA's private key
+   ```
+   
+8. Cat out the contents of ``rootCA.crt``, ``pc.key`` and ``pc.crt`` 
+
+   ```bash
+   cat rootCA.crt
+   cat pc.key
+   cat pc.crt
+   ```
+
+9. In WindowsToolsPC, use Notepad to create three new files with the same names
+
+7. Copy the ouput of previous cat command of ``rootCA.crt``, ``pc.key`` and ``pc.crt`` files into to your UserXX-WindowsToolsPC VM in any directory
+
+   ![](images/certs-on-wintools.png)
+
+8. Logon to Prism Central Web GUI on the WindowsToolsPC
+
+9. Go to **Settings > SSL Certificate**
+
+10. Click on **Replace Certificate** 
+
+11. Select **Import Key and Certificate**
+
+12. Click **Next**
+
+13. Choose the following:
+    
+    - Private Key Type - RSA 2048 bit 
+    - Private Key - ``pc.key``
+    - Public Certificate - ``pc.crt``
+    - CA Certificate/Chain - ``rootCA.crt``
+
+13. Click on **Import Files**
+
+    ![](images/import-certs.png)
+
+    Prism Central GUI will accept the certificate and restart for the changes to take effect. 
+
+    You have now successfully installed SSL certificate on Prism Central.
+
+    :::caution
+
+    Do not proceed to the next steps until Prism Central Certificate is installed without errors. 
+
+    Contact your instruction if you need help with troubleshooting SSL certificate issues.
+
+    :::
+
+## Creating IPI Installation Config File 
+
+In this section we will create our installation configuration files which will be then used in the next section to deploy an OCP cluster.
+
+### Preparing UserXX-LinuxToolsVM 
+
+1. Logon to your UserXX-LinuxToolsVM 
+
+2. Copy the Root CA's public certificate to the local certiface repository
+
+   ```bash
+   cd xyz
+   cp rootCA.crt /etc/pki/ca-trust/source/anchors/
+   ```
+3. Update the local CA trust repository with the new one your created
+
+   ```bash
+   update-ca-trust
+   ```
+   Now your UserXX-LinuxToolsVM will be able to trust SSL connections to Prism Central and will ``openshift-install`` binary
+
+4. Create a local ssh key which we will then use to access all the OCP cluster nodes/vms
+   
+   ```bash
+   ssh-keygen
+   ```
+   ```buttonless title="Execution example - accept default values"
+   Generating public/private rsa key pair.
+   Enter file in which to save the key (/root/.ssh/id_rsa): 
+   /root/.ssh/id_rsa already exists.
+   Overwrite (y/n)? y
+   Enter passphrase (empty for no passphrase):  
+   Enter same passphrase again: 
+   Your identification has been saved in /root/.ssh/id_rsa.
+   Your public key has been saved in /root/.ssh/id_rsa.pub.
+   The key fingerprint is:
+   SHA256:1gjz5zWw+aS7hiEje/pDGY2N5Y5anh6JEQYVf9GRmgs root@centos
+   The key's randomart image is:
+   +---[RSA 2048]----+
+   |  ..o.  ...o     |
+   |   . .  ..o      |
+   |    o +B.o.      |
+   |   . .E=*o +     |
+   |    .  *S.= +    |
+   |    .oBo+o = .   |
+   |    .Bo+ oo .    |
+   |    o =.. ..     |
+   |    .=o. .o.     |
+   +----[SHA256]-----+
+   ```
+### Creating the Installation Manifests (files)
+
+1. In your UserXX-LinuxToolsVM 
+
+2. Change to you working directory that we created before
+
+   ```bash
+   cd /root/xyz
+   ```
+3. Run the create install config command
+
+   :::tip 
+   Copy the pull_secret value from Red Hat Console or the ``pull_secret.json`` file into your clipboard as you will need to input in the interactive command execution
+   :::
+
+   ```bash
+   openshift-install create install-config 
+   ```
+   ```buttonless title="Execution example "
+   # openshift-install create install-config 
+   ? SSH Public Key /root/.ssh/id_rsa.pub
+   ? Platform nutanix
+   ? Prism Central pc.ntnxlab.local 
+   ? Port 9440
+   ? Username admin
+   ? Password [? for help] **********                 # << Your Prism Central password entered as plain text
+   INFO Connecting to Prism Central pc.ntnxlab.local 
+   ? Prism Element PHX-SPOC018-4                      # << Choose your Prism Element cluster
+   INFO Defaulting to only available network: Primary 
+   ? Virtual IP Address for API 10.38.18.219          # << Type the API IP 
+   ? Virtual IP Address for Ingress 10.38.18.220      # << Type the Ingress IP
+   ? Base Domain ntnxlab.local                        # << Type the name of your base domain 
+   ? Cluster Name xyz                                 # << Type the name of your sub domain or OCP cluster's name
+   ? Pull Secret [? for help] ************************************************
+   INFO Install-Config created in: .
+   ```
+
+4. Now we have to prepare the install-config.yaml file by adding the following details:
+
+   - Your self hosted Root CA's certificate
+   - Number of replcas for worker nodes (3 workers to 2 worker)
+   - Machine network details (your HPOC's subnet)
+   
+
+5. Add the details:
+
+   ```bash
+   vi install-config.yaml
+   ```
+   ```buttonless {4-15,21,37} title="Sample install-config.yaml file. You can also reduce the number of workers to 2"
+   apiVersion: v1
+   baseDomain: ntnxlab.local
+   additionalTrustBundle: | 
+     -----BEGIN CERTIFICATE-----
+     MIIEBTCCAu2gAwIBAgIJAPDfr9SQbStmMA0GCSqGSIb3DQEBCwUAMIGYMQswCQYD
+     VQQGEwJKUDEOMAwGA1UECAwFQ2hpYmExEDAOBgNVBAcMB0thc2hpd2ExEDAOBgNV
+     BAoMB251dGFuaXgxDzANBgNVBAsMBnJvb3RjYTEdMBsGA1UEAwwUcm9vdGNhLm50
+
+     <snipped for brevity>
+
+     WtAYCgGyXEUNVltpXBg8M/0S3WLgkW+Z0r408vC4kIIHAWANfJiGt3qLYeVep91h
+     NDB2Cn14G9CSCN3Pb1jO2wz9sc1E3rEPo1VHjyOjWccDayTJ3i/lNz6taPbXcmV7
+     3ZIeb1v6oRYfB4O/XQMvonTHwTXgumBWOxGcoh5g4h9av+v4oPykJqJexNSbwtQy
+     m11nydu44BpIGL+LOm5z0jMd2JrSJFI2Fg==
+     -----END CERTIFICATE-----
+   compute:
+   - architecture: amd64
+     hyperthreading: Enabled
+     name: worker
+     platform: {}
+     replicas: 2
+   controlPlane:
+     architecture: amd64
+     hyperthreading: Enabled
+     name: master
+     platform: {}
+     replicas: 3
+   credentialsMode: Manual
+   metadata:
+     creationTimestamp: null
+     name: xyz
+   networking:
+     clusterNetwork:
+     - cidr: 10.128.0.0/14
+       hostPrefix: 23
+     machineNetwork:
+     - cidr: 10.38.18.192/26
+     networkType: OpenShiftSDN
+     serviceNetwork:
+     - 172.30.0.0/16
+   platform:
+   nutanix:
+      apiVIP: 10.38.18.219
+      ingressVIP: 10.38.18.220
+      prismCentral:
+         endpoint:
+           address: pc.ntnxlab.local
+           port: 9440
+         password: techX2020!
+         username: admin
+      prismElements:
+      - endpoint:
+          address: 10.38.18.199
+          port: 9440
+        uuid: 0005e93a-3b29-fa1a-6b84-ac1f6b6922d1
+      subnetUUIDs:
+      - 34c84ddf-6c6e-46bf-9a5c-617b0b08a92c
+   publish: External
+   pullSecret: 'your pull secret'
+   sshKey: |
+     ssh-rsa XXXXXXXXX
+   ```
+
+6. Now we can create all the other manifests required for OCP cluster installation
+   
+   ```bash
+   openshift-install create manifests
+   ```
+   ```buttonless title="Output"
+   openshift-install create manifests
+   INFO Consuming Install Config from target directory 
+   INFO Manifests created in: manifests and openshift
+   ```
+
+7. Check the contents of ``manifests`` and ``openshift`` directories to make sure all the files are present
+
+   ```bash
+   ls -l openshift manifests
+   ```
+8. We have one last requirement to let IPI installer know that we will be using a self generated CA bundle, edit the ``manifests/cluster-proxy-01-config.yaml`` file to match the following:
+
+   ```bash {8}
+   apiVersion: config.openshift.io/v1
+   kind: Proxy
+   metadata:
+     creationTimestamp: null
+     name: cluster
+   spec:
+     trustedCA:
+       name: "user-ca-bundle" 
+   ```
+## Deploying OCP Cluster  
+
+This will be simplest part of all, provided you have done everything correctly to this point. 
+
+1. Start the installation of OCP cluster by executing the following
+
+   :::tip 
+   if you would like to see debug details and be able to capture logs, and also have access to the console, execute the following command:
+
+   ```bash 
+   openshift-install create cluster --log-level=debug | tee create-cluster.log &
+   ```
+   :::
+   ```bash 
+   openshift-install create cluster 
+   ```
+
+2. A typical installation flow would look like this
+
+   ```buttonless {16,18}
+   # openshift-install create cluster
+   INFO Consuming Master Machines from target directory 
+   INFO Consuming OpenShift Install (Manifests) from target directory 
+   INFO Consuming Common Manifests from target directory 
+   INFO Consuming Openshift Manifests from target directory 
+   INFO Consuming Worker Machines from target directory 
+   INFO Creating infrastructure resources...         
+   INFO Waiting up to 20m0s (until 8:16AM) for the Kubernetes API at https://api.xyz.ntnxlab.local:6443... 
+   INFO API v1.24.0+b62823b up                       
+   INFO Waiting up to 30m0s (until 8:27AM) for bootstrapping to complete... 
+   INFO Destroying the bootstrap resources...        
+   INFO Waiting up to 40m0s (until 8:49AM) for the clsuster at https://api.xyz.ntnxlab.local:6443 to initialize... 
+   INFO Waiting up to 10m0s (until 8:30AM) for the openshift-console route to be created... 
+   INFO Install complete!                            
+   INFO To access the cluster as the system:admin user when using 'oc', run 
+   INFO     export KUBECONFIG=/root/xyz/auth/kubeconfig 
+   INFO Access the OpenShift web-console here: https://console-openshift-console.apps.xyz.ntnxlab.local 
+   INFO Login to the console with user: "kubeadmin", and password: "xxxx-xxxx-xxxx-xxxx" 
+   INFO Time elapsed: 27m0s
+   ```
+3. Once the installation is done we can access OCP cluster using the following ways:
+
+   ```bash title="OC or kubectl command line"
+   export KUBECONFIG=/root/xyz/auth/kubeconfig
+   ```
+   ```bash
+   oc get nodes
+   ##
+   NAME                     STATUS   ROLES    AGE     VERSION
+   xyz-6zlwh-master-0       Ready    master   3d14h   v1.24.0+b62823b
+   xyz-6zlwh-master-1       Ready    master   3d14h   v1.24.0+b62823b
+   xyz-6zlwh-master-2       Ready    master   3d14h   v1.24.0+b62823b
+   xyz-6zlwh-worker-czbn7   Ready    worker   3d14h   v1.24.0+b62823b
+   xyz-6zlwh-worker-njv66   Ready    worker   3d14h   v1.24.0+b62823b
+   ```
+   Through the OCP GUI using kubeadmin credentials
+
+   From your UserXX-WindowsToolsPC, open Chrome
+
+   Open the following URL
+   
+   ```url
+   https://console-openshift-console.apps.xyz.ntnxlab.local
+   ```
+   ![](images/ipi-installed-cluster.png)
+   
+   You have sucessfully installed OCP using IPI.
+

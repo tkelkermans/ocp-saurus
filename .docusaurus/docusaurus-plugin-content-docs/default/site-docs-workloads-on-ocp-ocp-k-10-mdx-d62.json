@@ -1,0 +1,28 @@
+{
+  "unversionedId": "workloads_on_ocp/ocp_k10",
+  "id": "workloads_on_ocp/ocp_k10",
+  "title": "Deploying Backup Application",
+  "description": "In this section we will implement Kasten K10 as a backup and restore",
+  "source": "@site/docs/workloads_on_ocp/ocp_k10.mdx",
+  "sourceDirName": "workloads_on_ocp",
+  "slug": "/workloads_on_ocp/ocp_k10",
+  "permalink": "/workloads_on_ocp/ocp_k10",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/workloads_on_ocp/ocp_k10.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2,
+    "title": "Deploying Backup Application"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "OCP: Provision Storage for Image Registry",
+    "permalink": "/optional_labs/ocp_image_registry"
+  },
+  "next": {
+    "title": "Deploying Workload",
+    "permalink": "/workloads_on_ocp/ocp_wordpress_deploy"
+  }
+}

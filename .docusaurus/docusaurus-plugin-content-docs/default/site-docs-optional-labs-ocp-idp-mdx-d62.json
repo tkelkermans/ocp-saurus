@@ -1,0 +1,26 @@
+{
+  "unversionedId": "optional_labs/ocp_idp",
+  "id": "optional_labs/ocp_idp",
+  "title": "OCP: Deploying IDP for OCP",
+  "description": "In this lab we will deploy a IDP connection to your OCP cluster to provide Authentication and Authorization.",
+  "source": "@site/docs/optional_labs/ocp_idp.mdx",
+  "sourceDirName": "optional_labs",
+  "slug": "/optional_labs/ocp_idp",
+  "permalink": "/optional_labs/ocp_idp",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/optional_labs/ocp_idp.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "OCP: Deploying IDP for OCP"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "OCP: Create Additional OCP Clusters",
+    "permalink": "/optional_labs/ocp_vms_2"
+  },
+  "next": {
+    "title": "Linux Tools VM",
+    "permalink": "/toolsvms/linux_tools_vm"
+  }
+}

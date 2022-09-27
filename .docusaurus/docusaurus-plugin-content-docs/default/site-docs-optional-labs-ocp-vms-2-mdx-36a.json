@@ -1,0 +1,26 @@
+{
+  "unversionedId": "optional_labs/ocp_vms_2",
+  "id": "optional_labs/ocp_vms_2",
+  "title": "OCP: Create Additional OCP Clusters",
+  "description": "If you are doing this section of the lab using a Single Node HPOC (SPOC) there will not be enough resources to deploy a second OCP cluster. Please delete the first OCP cluster from Calm > Actions > Delete before proceeding with this lab.",
+  "source": "@site/docs/optional_labs/ocp_vms_2.mdx",
+  "sourceDirName": "optional_labs",
+  "slug": "/optional_labs/ocp_vms_2",
+  "permalink": "/optional_labs/ocp_vms_2",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/optional_labs/ocp_vms_2.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "OCP: Create Additional OCP Clusters"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "OCP: IPI Installation",
+    "permalink": "/ocp_ipi_install/"
+  },
+  "next": {
+    "title": "OCP: Deploying IDP for OCP",
+    "permalink": "/optional_labs/ocp_idp"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "unversionedId": "ocp_ntnx_hci/import_bp",
+  "id": "ocp_ntnx_hci/import_bp",
+  "title": "OCP: Architecture and Initial Setup",
+  "description": "In this lab, we will set up OCP infrastructure using Nutanix Calm.",
+  "source": "@site/docs/ocp_ntnx_hci/import_bp.mdx",
+  "sourceDirName": "ocp_ntnx_hci",
+  "slug": "/ocp_ntnx_hci/import_bp",
+  "permalink": "/ocp_ntnx_hci/import_bp",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ntnx_hci/import_bp.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2,
+    "title": "OCP: Architecture and Initial Setup"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Getting Started",
+    "permalink": "/"
+  },
+  "next": {
+    "title": "OCP: Deploy Provisioning VM",
+    "permalink": "/ocp_ntnx_hci/prov_vm"
+  }
+}

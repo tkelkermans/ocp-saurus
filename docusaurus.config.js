@@ -1,31 +1,55 @@
+// @ts-check
+// Note: type annotations allow type checking and IDEs autocompletion
+
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
-// With JSDoc @type annotations, IDEs can provide config autocompletion
-/** @type {import('@docusaurus/types').DocusaurusConfig} */
-(module.exports = {
-  title: 'OCP',
-  tagline: 'Dinosaurs are cool',
+/** @type {import('@docusaurus/types').Config} */
+const config = {
+  title: 'OCP on Nutanix',
+  tagline: 'OCP is the easiest on Nutanix',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
+
+  // GitHub pages deployment config.
+  // If you aren't using GitHub pages, you don't need these.
   organizationName: 'facebook', // Usually your GitHub org/user name.
   projectName: 'docusaurus', // Usually your repo name.
 
+  // Even if you don't use internalization, you can use this field to set useful
+  // metadata like html lang. For example, if your site is Chinese, you may want
+  // to replace "en" with "zh-Hans".
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en'],
+  },
+
   presets: [
     [
-      '@docusaurus/preset-classic',
+      'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          routeBasePath: '/', 
+          routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
+          // Remove this to remove the "edit this page" links.
+          editUrl:
+            'https://github.com/nutanix-japan/ocp-saurus/edit/main/',
         },
-        blog:false
+        blog: {
+          showReadingTime: true,
+          // Please change this to your repo.
+          // Remove this to remove the "edit this page" links.
+          editUrl:
+            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+        },
+        theme: {
+          customCss: require.resolve('./src/css/custom.css'),
+        },
       }),
     ],
   ],
@@ -33,43 +57,40 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      navbar: {
-        title: 'OCP on Nutanix',
-        logo: {
-          alt: 'Site Logo',
-          src: 'img/logo.svg',
-          srcDark: 'img/logo_dark.svg',
-
-          target: '_self',
+      docs: {
+        sidebar: {
+          autoCollapseCategories: true,
         },
-        items: [
-          {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: 'Bootcamp',
-          },
-          // {to: '/blog', label: 'Blog', position: 'left'},
-          // {
-          //   href: 'https://github.com/facebook/docusaurus',
-          //   label: 'GitHub',
-          //   position: 'right',
-          // },
-        ],
-      },
-      footer: {
-        style: 'dark',
-        copyright: `Copyright © ${new Date().getFullYear()} OCP on Nutanix, Inc. Built with Docusaurus.`,
       },
       colorMode: {
         // defaultMode: 'dark',
         disableSwitch: false,
         respectPrefersColorScheme: true,
       },
+      navbar: {
+        title: 'OCP on Nutanix Bootcamp',
+        logo: {
+          alt: 'OCP on Nutanix Bootcamp',
+          src: 'img/logo.svg',
+        },
+        items: [
+          {
+            href: 'https://github.com/nutanix-japan/ocp-saurus',
+            label: 'GitHub',
+            position: 'right',
+          },
+        ],
+      },
+      footer: {
+        style: 'dark',
+        
+        copyright: `Copyright © ${new Date().getFullYear()} Nutanix. Built with Docusaurus.`,
+      },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['powershell'],
       },
     }),
-});
+};
+
+module.exports = config;

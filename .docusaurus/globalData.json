@@ -1,0 +1,108 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/",
+          "mainDocId": "intro",
+          "docs": [
+            {
+              "id": "intro",
+              "path": "/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "ocp_assisted_install/ocp_assisted_install",
+              "path": "/ocp_assisted_install/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "ocp_ipi_install/ocp_ipi_install",
+              "path": "/ocp_ipi_install/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "ocp_ntnx_hci/import_bp",
+              "path": "/ocp_ntnx_hci/import_bp",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "ocp_ntnx_hci/ocp_csi",
+              "path": "/ocp_ntnx_hci/ocp_csi",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "ocp_ntnx_hci/ocp_scale_out_in",
+              "path": "/ocp_ntnx_hci/ocp_scale_out_in",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "ocp_ntnx_hci/ocp_vms",
+              "path": "/ocp_ntnx_hci/ocp_vms",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "ocp_ntnx_hci/prov_vm",
+              "path": "/ocp_ntnx_hci/prov_vm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "optional_labs/ocp_idp",
+              "path": "/optional_labs/ocp_idp",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "optional_labs/ocp_image_registry",
+              "path": "/optional_labs/ocp_image_registry",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "optional_labs/ocp_vms_2",
+              "path": "/optional_labs/ocp_vms_2",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "toolsvms/linux_tools_vm",
+              "path": "/toolsvms/linux_tools_vm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "toolsvms/windows_tools_vm",
+              "path": "/toolsvms/windows_tools_vm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "workloads_on_ocp/ocp_k10",
+              "path": "/workloads_on_ocp/ocp_k10",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "workloads_on_ocp/ocp_k10_backup_restore",
+              "path": "/workloads_on_ocp/ocp_k10_backup_restore",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "workloads_on_ocp/ocp_wordpress_deploy",
+              "path": "/workloads_on_ocp/ocp_wordpress_deploy",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/",
+                "label": "intro"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

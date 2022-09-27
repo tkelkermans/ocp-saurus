@@ -1,0 +1,28 @@
+{
+  "unversionedId": "workloads_on_ocp/ocp_wordpress_deploy",
+  "id": "workloads_on_ocp/ocp_wordpress_deploy",
+  "title": "Deploying Workload",
+  "description": "In this section we will deploy a simple Wordpress application with MYSQL as the backend database store.",
+  "source": "@site/docs/workloads_on_ocp/ocp_wordpress_deploy.mdx",
+  "sourceDirName": "workloads_on_ocp",
+  "slug": "/workloads_on_ocp/ocp_wordpress_deploy",
+  "permalink": "/workloads_on_ocp/ocp_wordpress_deploy",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/workloads_on_ocp/ocp_wordpress_deploy.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1,
+    "title": "Deploying Workload"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Deploying Backup Application",
+    "permalink": "/workloads_on_ocp/ocp_k10"
+  },
+  "next": {
+    "title": "Backup and Restore Applications",
+    "permalink": "/workloads_on_ocp/ocp_k10_backup_restore"
+  }
+}

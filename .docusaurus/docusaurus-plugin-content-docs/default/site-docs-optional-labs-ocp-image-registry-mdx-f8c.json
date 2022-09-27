@@ -1,0 +1,26 @@
+{
+  "unversionedId": "optional_labs/ocp_image_registry",
+  "id": "optional_labs/ocp_image_registry",
+  "title": "OCP: Provision Storage for Image Registry",
+  "description": "OCP comes with a in-built container image registry. The advantages of",
+  "source": "@site/docs/optional_labs/ocp_image_registry.mdx",
+  "sourceDirName": "optional_labs",
+  "slug": "/optional_labs/ocp_image_registry",
+  "permalink": "/optional_labs/ocp_image_registry",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/optional_labs/ocp_image_registry.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "OCP: Provision Storage for Image Registry"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "OCP: Deploy Nutanix CSI for OCP",
+    "permalink": "/ocp_ntnx_hci/ocp_csi"
+  },
+  "next": {
+    "title": "Deploying Backup Application",
+    "permalink": "/workloads_on_ocp/ocp_k10"
+  }
+}

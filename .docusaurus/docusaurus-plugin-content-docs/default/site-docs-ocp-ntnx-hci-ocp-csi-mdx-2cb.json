@@ -1,0 +1,28 @@
+{
+  "unversionedId": "ocp_ntnx_hci/ocp_csi",
+  "id": "ocp_ntnx_hci/ocp_csi",
+  "title": "OCP: Deploy Nutanix CSI for OCP",
+  "description": "In this section we will enable your deployed OCP cluster to have access to Nutanix HCI storage in the form of StorageClass, Physical Volumes and Pysical Volume claims.",
+  "source": "@site/docs/ocp_ntnx_hci/ocp_csi.mdx",
+  "sourceDirName": "ocp_ntnx_hci",
+  "slug": "/ocp_ntnx_hci/ocp_csi",
+  "permalink": "/ocp_ntnx_hci/ocp_csi",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ntnx_hci/ocp_csi.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 7,
+  "frontMatter": {
+    "sidebar_position": 7,
+    "title": "OCP: Deploy Nutanix CSI for OCP"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "OCP: Day 0 and Day 1 Operations",
+    "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
+  },
+  "next": {
+    "title": "OCP: Provision Storage for Image Registry",
+    "permalink": "/optional_labs/ocp_image_registry"
+  }
+}

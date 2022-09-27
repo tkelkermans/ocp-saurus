@@ -1,0 +1,28 @@
+{
+  "unversionedId": "ocp_ntnx_hci/prov_vm",
+  "id": "ocp_ntnx_hci/prov_vm",
+  "title": "OCP: Deploy Provisioning VM",
+  "description": "Configure Provisioning VM Blueprint",
+  "source": "@site/docs/ocp_ntnx_hci/prov_vm.mdx",
+  "sourceDirName": "ocp_ntnx_hci",
+  "slug": "/ocp_ntnx_hci/prov_vm",
+  "permalink": "/ocp_ntnx_hci/prov_vm",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ntnx_hci/prov_vm.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "sidebar_position": 5,
+    "title": "OCP: Deploy Provisioning VM"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "OCP: Architecture and Initial Setup",
+    "permalink": "/ocp_ntnx_hci/import_bp"
+  },
+  "next": {
+    "title": "OCP: Deploy OCP Infrastructure",
+    "permalink": "/ocp_ntnx_hci/ocp_vms"
+  }
+}

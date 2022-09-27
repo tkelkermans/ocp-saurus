@@ -22,6 +22,14 @@ You could also explore automating these one time pre-requisites preparation task
 
 :::
 
+:::note References
+
+We have referred to the following documents for building this lab:
+- [Nutanix Dev - IPI on Nutanix](https://www.nutanix.dev/2022/08/16/red-hat-openshift-ipi-on-nutanix-cloud-platform)
+- [RedHat IPI Installation](https://docs.openshift.com/container-platform/4.11/installing/installing_nutanix/installing-nutanix-installer-provisioned.html#installation-configure-proxy_installing-nutanix-installer-provisioned)
+- [RedHat IPI SSL Requirements](https://opendocs.nutanix.com/openshift/install/ipi/)
+:::
+
 ## Pre-requisites
 
 The following pre-requisites are necessary:
@@ -147,20 +155,27 @@ In this section we will add PC, API and APPS Ingress DNS records for lookup by O
 
 3. Test name resolution for added entries
 
-   ```PowerShell {6,13}
+   ```PowerShell {6,13,20}
    nslookup api.xyz.ntnxlab.local
-   Server:  dc.ntnxlab.local
-   Address:  10.38.3.75
+   Server: dc.ntnxlab.local
+   Address: 10.38.18.203
 
-   Name:    api.xyz.ntnxlab.local
-   Address:  10.38.3.109 
+   Name: api.xyz.ntnxlab.local
+   Address: 10.38.18.219 
    #
    nslookup myapp.apps.xyz.ntnxlab.local
-   Server:  dc.ntnxlab.local
-   Address:  10.38.3.75
+   Server: dc.ntnxlab.local
+   Address: 10.38.18.203
 
-   Name:    myapp.apps.xyz.ntnxlab.local
-   Address:  10.38.3.110 
+   Name: myapp.apps.xyz.ntnxlab.local
+   Address: 10.38.18.220
+   #
+   nslookup pc.ntnxlab.local
+   Server: dc.ntnxlab.local
+   Address: 10.38.18.203
+
+   Name: pc.ntnxlab.local
+   Address: 10.38.3.201
    ```
 
 ### Downloading OCP Tools 
@@ -399,9 +414,9 @@ All this will be done on the UserXX-LinuxToolsVM.
    rootCA.key           ## Root CA's private key
    ```
    
-8. Cat out the contents of ``rootCA.crt``, ``pc.key`` and ``pc.crt`` 
+8. ``cat`` out the contents of ``rootCA.crt``, ``pc.key`` and ``pc.crt`` and copy them to the UserXX-WindowsToolsPC in separate files
 
-   ```bash
+   ```buttonless
    cat rootCA.crt
    cat pc.key
    cat pc.crt
@@ -442,7 +457,7 @@ All this will be done on the UserXX-LinuxToolsVM.
 
     Do not proceed to the next steps until Prism Central Certificate is installed without errors. 
 
-    Contact your instruction if you need help with troubleshooting SSL certificate issues.
+    Contact your lab instructors if you need help with troubleshooting SSL certificate issues.
 
     :::
 
@@ -545,7 +560,7 @@ In this section we will create our installation configuration files which will b
    ```bash
    vi install-config.yaml
    ```
-   ```buttonless {4-15,21,37} title="Sample install-config.yaml file. You can also reduce the number of workers to 2"
+   ```yml {4-15,21,37} title="Sample install-config.yaml file. You can also reduce the number of workers to 2"
    apiVersion: v1
    baseDomain: ntnxlab.local
    additionalTrustBundle: | 
@@ -553,9 +568,7 @@ In this section we will create our installation configuration files which will b
      MIIEBTCCAu2gAwIBAgIJAPDfr9SQbStmMA0GCSqGSIb3DQEBCwUAMIGYMQswCQYD
      VQQGEwJKUDEOMAwGA1UECAwFQ2hpYmExEDAOBgNVBAcMB0thc2hpd2ExEDAOBgNV
      BAoMB251dGFuaXgxDzANBgNVBAsMBnJvb3RjYTEdMBsGA1UEAwwUcm9vdGNhLm50
-
      <snipped for brevity>
-
      WtAYCgGyXEUNVltpXBg8M/0S3WLgkW+Z0r408vC4kIIHAWANfJiGt3qLYeVep91h
      NDB2Cn14G9CSCN3Pb1jO2wz9sc1E3rEPo1VHjyOjWccDayTJ3i/lNz6taPbXcmV7
      3ZIeb1v6oRYfB4O/XQMvonTHwTXgumBWOxGcoh5g4h9av+v4oPykJqJexNSbwtQy
@@ -627,7 +640,7 @@ In this section we will create our installation configuration files which will b
    ```
 8. We have one last requirement to let IPI installer know that we will be using a self generated CA bundle, edit the ``manifests/cluster-proxy-01-config.yaml`` file to match the following:
 
-   ```bash {8}
+   ```yml {8}
    apiVersion: config.openshift.io/v1
    kind: Proxy
    metadata:
@@ -643,6 +656,9 @@ This will be simplest part of all, provided you have done everything correctly t
 
 1. Start the installation of OCP cluster by executing the following
 
+   ```bash 
+   openshift-install create cluster 
+   ```
    :::tip 
    if you would like to see debug details and be able to capture logs, and also have access to the console, execute the following command:
 
@@ -650,9 +666,6 @@ This will be simplest part of all, provided you have done everything correctly t
    openshift-install create cluster --log-level=debug | tee create-cluster.log &
    ```
    :::
-   ```bash 
-   openshift-install create cluster 
-   ```
 
 2. A typical installation flow would look like this
 

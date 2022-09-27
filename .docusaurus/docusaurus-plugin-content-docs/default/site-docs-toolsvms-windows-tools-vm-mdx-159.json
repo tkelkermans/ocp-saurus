@@ -1,0 +1,24 @@
+{
+  "unversionedId": "toolsvms/windows_tools_vm",
+  "id": "toolsvms/windows_tools_vm",
+  "title": "Windows Tools VM",
+  "description": "Overview",
+  "source": "@site/docs/toolsvms/windows_tools_vm.mdx",
+  "sourceDirName": "toolsvms",
+  "slug": "/toolsvms/windows_tools_vm",
+  "permalink": "/toolsvms/windows_tools_vm",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/toolsvms/windows_tools_vm.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "title": "Windows Tools VM",
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Linux Tools VM",
+    "permalink": "/toolsvms/linux_tools_vm"
+  }
+}

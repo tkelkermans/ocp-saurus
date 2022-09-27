@@ -1,0 +1,27 @@
+{
+  "unversionedId": "ocp_assisted_install/ocp_assisted_install",
+  "id": "ocp_assisted_install/ocp_assisted_install",
+  "title": "OCP: Assisted Installation",
+  "description": "In this optional lab we will go through Assited Installation feature that Red Hat Console offers.",
+  "source": "@site/docs/ocp_assisted_install/ocp_assisted_install.mdx",
+  "sourceDirName": "ocp_assisted_install",
+  "slug": "/ocp_assisted_install/",
+  "permalink": "/ocp_assisted_install/",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_assisted_install/ocp_assisted_install.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "OCP: Assisted Installation",
+    "sidebar_postion": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Backup and Restore Applications",
+    "permalink": "/workloads_on_ocp/ocp_k10_backup_restore"
+  },
+  "next": {
+    "title": "OCP: IPI Installation",
+    "permalink": "/ocp_ipi_install/"
+  }
+}

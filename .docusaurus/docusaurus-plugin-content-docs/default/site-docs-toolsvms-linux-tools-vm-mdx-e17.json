@@ -1,0 +1,28 @@
+{
+  "unversionedId": "toolsvms/linux_tools_vm",
+  "id": "toolsvms/linux_tools_vm",
+  "title": "Linux Tools VM",
+  "description": "Overview",
+  "source": "@site/docs/toolsvms/linux_tools_vm.mdx",
+  "sourceDirName": "toolsvms",
+  "slug": "/toolsvms/linux_tools_vm",
+  "permalink": "/toolsvms/linux_tools_vm",
+  "draft": false,
+  "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/toolsvms/linux_tools_vm.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "title": "Linux Tools VM",
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "OCP: Deploying IDP for OCP",
+    "permalink": "/optional_labs/ocp_idp"
+  },
+  "next": {
+    "title": "Windows Tools VM",
+    "permalink": "/toolsvms/windows_tools_vm"
+  }
+}

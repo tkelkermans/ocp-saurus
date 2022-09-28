@@ -617,9 +617,9 @@ In this section we will create our installation configuration files which will b
       subnetUUIDs:
       - 34c84ddf-6c6e-46bf-9a5c-617b0b08a92c
    publish: External
-   pullSecret: 'your pull secret'
+   pullSecret: '{"auths": ...}'
    sshKey: |
-     ssh-rsa XXXXXXXXX
+     ssh-rsa AAAA..
    ```
 
 6. Now we can create all the other manifests required for OCP cluster installation

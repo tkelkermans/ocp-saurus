@@ -14,9 +14,9 @@ Estimated time to complete this lab is 60 minutes.
 
 :::
 
-:::info
+:::info Setting expectations
 
-Although it might seem like a lot of work for IPI, the aim of the lab is to take you through the one-time process a customer would go through. Once pre-requisites are set, customers can deploy as many number of OCP clusters.
+Although it might seem like a lot of work for IPI, the aim of the lab is to take you through the one-time process a customer would go through. Once pre-requisites are set once, customers can deploy as many number of OCP clusters.
 
 You could also explore automating these one time pre-requisites preparation tasks using automation frameworks like Nutanix **NCM**.
 
@@ -42,7 +42,7 @@ The following pre-requisites are necessary:
 - An SSL certificate for Prism Central signed by a Certification Authority (we will also create certificates in this lab)
 - Networking requirements
   - AHV IPAM Network (your HPOC already has this)
-  - DNS server (Windows AutoAD VM is deployed for DNS capabilities)
+  - DNS server (Windows AutoAD VM is pre-deployed for DNS capabilities)
   - Static IP addresses in your AHV IPAM network for OCP's api and apps endpoints 
 
 ## High Level Plan
@@ -60,7 +60,7 @@ We will be doing this lab
 
 ### Preparing your HPOC cluster
 
-:::caution Do you have enough resources?
+:::caution Do you have enough compute resources?
 
 If you are working on a HPOC cluster, make sure there are enough resources available to deploy a new OCP cluster.
 
@@ -77,7 +77,7 @@ We will first find two IPs for OCP ``api`` and ``apps`` ingress endpoints in our
 
 1. Find the CIDR range for your  **Primary** IPAM network either from [RX](https://rx.corp.nutanix.com/) or from your instrutor
 
-   ```bash title="CIDR example for your Nutanix cluster"
+   ```buttonless title="CIDR example for your Nutanix cluster"
    10.38.18.192/26
    ```
 
@@ -182,16 +182,17 @@ In this section we will add PC, API and APPS Ingress DNS records for lookup by O
 
 We will need to the OCP tools mentioned in the pre-requisites section to prepare our environment
 
-:::info
+:::info OCP Tools information
 
 You can get the URLs to download the tools and pull secret from RedHat Console: 
 
 Openshift > Clusters > Create Clusters > Datacenter > [Nutanix AOS](https://console.redhat.com/openshift/install/nutanix/installer-provisioned)
 
+In this section please using the download links provided is also ok. 
 :::
 
 
-1. Logon to UserXX-LinuxToolsVM and download the binaries
+1. Logon to UserXX-LinuxToolsVM and download the binaries 
 
    - Username: root
    - Password: default 
@@ -208,7 +209,7 @@ Openshift > Clusters > Create Clusters > Datacenter > [Nutanix AOS](https://cons
    ```bash
    tar xvf openshift-install-linux.tar.gz
    tar xvf openshift-client-linux.tar.gz 
-   # Add to path 
+   # Adding to path 
    cp kubectl /usr/local/bin
    cp oc /usr/local/bin
    cp openshift-install /usr/local/bin
@@ -269,7 +270,7 @@ Refer to [Cloud Credential Operator CCO](https://docs.openshift.com/container-pl
    EOF
    ```
 
-4. Edit the ``pc_credentials.yaml`` file to include your password
+4. Edit the ``pc_credentials.yaml`` file to change your Prism Central password
 
    ```bash
    vi pc_credentials.yaml

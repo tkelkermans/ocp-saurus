@@ -11,6 +11,9 @@
   "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/workloads_on_ocp/ocp_k10_backup_restore.mdx",
   "tags": [],
   "version": "current",
+  "lastUpdatedBy": "Author",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "Oct 14, 2018",
   "sidebarPosition": 3,
   "frontMatter": {
     "sidebar_position": 3,

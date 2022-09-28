@@ -32,6 +32,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/intro.md",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 1,
               "frontMatter": {
                 "slug": "/",
@@ -56,6 +59,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_assisted_install/ocp_assisted_install.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "frontMatter": {
                 "title": "OCP: Assisted Installation",
                 "sidebar_postion": 1
@@ -83,6 +89,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ipi_install/ocp_ipi_install.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "frontMatter": {
                 "title": "OCP: IPI Installation"
               },
@@ -109,6 +118,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ntnx_hci/import_bp.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 2,
               "frontMatter": {
                 "sidebar_position": 2,
@@ -137,6 +149,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ntnx_hci/ocp_csi.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 7,
               "frontMatter": {
                 "sidebar_position": 7,
@@ -165,6 +180,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ntnx_hci/ocp_scale_out_in.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 6,
               "frontMatter": {
                 "sidebar_position": 6,
@@ -193,6 +211,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ntnx_hci/ocp_vms.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 4,
               "frontMatter": {
                 "sidebar_position": 4,
@@ -221,6 +242,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ntnx_hci/prov_vm.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 5,
               "frontMatter": {
                 "sidebar_position": 5,
@@ -249,6 +273,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/optional_labs/ocp_idp.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "frontMatter": {
                 "title": "OCP: Deploying IDP for OCP"
               },
@@ -275,6 +302,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/optional_labs/ocp_image_registry.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "frontMatter": {
                 "title": "OCP: Provision Storage for Image Registry"
               },
@@ -301,6 +331,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/optional_labs/ocp_vms_2.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "frontMatter": {
                 "title": "OCP: Create Additional OCP Clusters"
               },
@@ -327,6 +360,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/toolsvms/linux_tools_vm.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 1,
               "frontMatter": {
                 "title": "Linux Tools VM",
@@ -355,6 +391,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/toolsvms/windows_tools_vm.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 2,
               "frontMatter": {
                 "title": "Windows Tools VM",
@@ -379,6 +418,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/workloads_on_ocp/ocp_k10.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 2,
               "frontMatter": {
                 "sidebar_position": 2,
@@ -407,6 +449,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/workloads_on_ocp/ocp_k10_backup_restore.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 3,
               "frontMatter": {
                 "sidebar_position": 3,
@@ -435,6 +480,9 @@
               "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/workloads_on_ocp/ocp_wordpress_deploy.mdx",
               "tags": [],
               "version": "current",
+              "lastUpdatedBy": "Author",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
               "sidebarPosition": 1,
               "frontMatter": {
                 "sidebar_position": 1,

@@ -27,6 +27,8 @@ export default {
       {
         "docs": {
           "routeBasePath": "/",
+          "showLastUpdateAuthor": true,
+          "showLastUpdateTime": true,
           "sidebarPath": "/Users/lakshmi/Documents/GitHub/ocp-saurus/sidebars.js",
           "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/"
         },
@@ -265,7 +267,9 @@ export default {
           }
         ]
       },
-      "additionalLanguages": [],
+      "additionalLanguages": [
+        "powershell"
+      ],
       "magicComments": [
         {
           "className": "theme-code-block-highlighted-line",

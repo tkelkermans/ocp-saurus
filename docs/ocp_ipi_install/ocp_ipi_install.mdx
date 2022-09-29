@@ -129,6 +129,12 @@ In this section we will add PC, API and APPS Ingress DNS records for lookup by O
 
 2. We will add the following entries to DNS server using the two consecutive IPs you found in the previous section
    
+   :::danger Use your HPOC cluster's IP Addresses
+
+   The IP addresses in the following commands are used as an example. You should use IP address details that belong to your HPOC cluster. For information on locating your cluster IP see Getting Started [Networking](../intro.md#networking) section. 
+   
+   :::
+   
    ```buttonless
    10.38.18.219   api.your_ocp_cluster_subdomain.ntnxlab.local
    10.38.18.220   *.apps.your_ocp_cluster_subdomain.ntnxlab.local
@@ -219,7 +225,7 @@ In this section please using the download links provided is also ok.
 3. Now that the pull secret value is in your clipboard, paste the contents string to a pull secret file in the same directory
 
    ```bash
-   echo "paste copied pull secret content here" > pull_secret.json
+   vi pull_secret.json
    ```
 4. Make sure all the files are in the xyz directory 
 
@@ -254,8 +260,10 @@ Refer to [Cloud Credential Operator CCO](https://docs.openshift.com/container-pl
 2. Make sure the ccoctl file is present 
 
    ```bash
-   ls -l ccoctl 
-   -rwxr-x--x 1 root root  72158183 Aug 29 16:33 ccoctl
+   ls -lh ccoctl 
+   ```
+   ```bash title="Output"
+   -rwxr----- 1 root root 69M Sep 13 04:09 ccoctl
    ```
 3. Create a Prism Central credentials file
 
@@ -287,7 +295,7 @@ Refer to [Cloud Credential Operator CCO](https://docs.openshift.com/container-pl
    ```bash
    ccoctl nutanix create-shared-secrets --credentials-requests-dir=credreqs --output-dir=. --credentials-source-filepath=pc_credentials.yaml
    ```
-   ```buttonless title="Ouput"
+   ```buttonless title="Output"
    2022/09/29 23:53:36 Saved credentials configuration to: manifests/openshift-machine-api-nutanix-credentials-credentials.yaml
    ```
 
@@ -423,13 +431,17 @@ All this will be done on the UserXX-LinuxToolsVM.
    cat pc.crt
    ```
 
-9. In WindowsToolsPC, use Notepad to create three new files with the same names
+9. In UserXX-WindowsToolsPC, use Notepad to create three new files with the same names
 
 7. Copy the ouput of previous cat command of ``rootCA.crt``, ``pc.key`` and ``pc.crt`` files into to your UserXX-WindowsToolsPC VM in any directory
 
    ![](images/certs-on-wintools.png)
 
 8. Logon to Prism Central Web GUI on the WindowsToolsPC
+
+   ```url
+   https://pc.ntnxlab.local/
+   ```
 
 9. Go to **Settings > SSL Certificate**
 
@@ -450,7 +462,9 @@ All this will be done on the UserXX-LinuxToolsVM.
 
     ![](images/import-certs.png)
 
-    Prism Central GUI will accept the certificate and restart for the changes to take effect. 
+14. Prism Central GUI will accept the certificate and restart for the changes to take effect. 
+
+    ![](images/pc-crt-installed.png)
 
     You have now successfully installed SSL certificate on Prism Central.
 
@@ -461,6 +475,28 @@ All this will be done on the UserXX-LinuxToolsVM.
     Contact your lab instructors if you need help with troubleshooting SSL certificate issues.
 
     :::
+
+15. To make sure that the WindowsToolsPC has the rootCA certificate installed in the local, double click on the ``rootCA.crt`` file in windows file explorer and select **install Certificate**
+
+    ![](images/install-rootCA.png)
+
+16. Choose **Local Machine** as Store Location and click **Next**
+
+17. Choose **Place all certificates in the following store** and click **Browse**
+
+18. Choose **Trusted Root Certification Authorities** and click **Next**
+
+19. Click on **Finish**
+
+20. You will notice that the browser has no warning about about an untrusted PC site 
+     
+    :::tip
+    You may need to restart your browser if this isn't showing as a trusted site.
+    :::
+
+    ![](images/trusted-pc.png)
+
+    You have completed the configuring SSL certificate pre-requisites for IPI installation. 
 
 ## Creating IPI Installation Config File 
 
@@ -473,7 +509,7 @@ In this section we will create our installation configuration files which will b
 2. Copy the Root CA's public certificate to the local certiface repository
 
    ```bash
-   cd xyz
+   cd /root/xyz
    cp rootCA.crt /etc/pki/ca-trust/source/anchors/
    ```
 3. Update the local CA trust repository with the new one your created
@@ -516,7 +552,7 @@ In this section we will create our installation configuration files which will b
 
 1. In your UserXX-LinuxToolsVM 
 
-2. Change to you working directory that we created before
+2. Change to you working directory that we created before (if not there already)
 
    ```bash
    cd /root/xyz
@@ -530,11 +566,11 @@ In this section we will create our installation configuration files which will b
    ```bash
    openshift-install create install-config 
    ```
-   ```buttonless title="Execution example "
+   ```buttonless title="Execution example - use up and down arrow keys to choose options"
    # openshift-install create install-config 
    ? SSH Public Key /root/.ssh/id_rsa.pub
    ? Platform nutanix
-   ? Prism Central pc.ntnxlab.local 
+   ? Prism Central pc.ntnxlab.local                   # << Your Prism Central FQDN address
    ? Port 9440
    ? Username admin
    ? Password [? for help] **********                 # << Your Prism Central password entered as plain text
@@ -561,7 +597,27 @@ In this section we will create our installation configuration files which will b
    ```bash
    vi install-config.yaml
    ```
-   ```yml {4-13,19,35} title="Sample install-config.yaml file. You can also reduce the number of workers to 2"
+   ```md
+   ### Details element example
+
+   <details>
+   <summary>Toggle me!</summary>
+   <div>
+      <div>This is the detailed content</div>
+      <br/>
+      <details>
+         <summary>
+         Nested toggle! Some surprise inside...
+         </summary>
+         <div>
+         😲😲😲😲😲
+         </div>
+      </details>
+   </div>
+   </details>
+   ```
+
+   ```yml {4-13,19,35} title="Sample install-config.yaml file - Edit the highlighted lines"
    apiVersion: v1
    baseDomain: ntnxlab.local
    additionalTrustBundle: | 
@@ -580,7 +636,7 @@ In this section we will create our installation configuration files which will b
      hyperthreading: Enabled
      name: worker
      platform: {}
-     replicas: 2
+     replicas: 3 ## << This can be made into 2 nodes
    controlPlane:
      architecture: amd64
      hyperthreading: Enabled
@@ -639,9 +695,11 @@ In this section we will create our installation configuration files which will b
    ```bash
    ls -l openshift manifests
    ```
-8. We have one last requirement to let IPI installer know that we will be using a self generated CA bundle, edit the ``manifests/cluster-proxy-01-config.yaml`` file to match the following:
-
-   ```yml {8}
+8. We have one last requirement to let IPI installer know that we will be using a self generated CA bundle, edit the ``manifests/cluster-proxy-01-config.yaml`` file
+   ```bash
+   vi manifests/cluster-proxy-01-config.yaml
+   ```
+   ```yml {8} title="Match the following content"
    apiVersion: config.openshift.io/v1
    kind: Proxy
    metadata:
@@ -650,6 +708,7 @@ In this section we will create our installation configuration files which will b
    spec:
      trustedCA:
        name: "user-ca-bundle" 
+   status: {}
    ```
 ## Deploying OCP Cluster  
 

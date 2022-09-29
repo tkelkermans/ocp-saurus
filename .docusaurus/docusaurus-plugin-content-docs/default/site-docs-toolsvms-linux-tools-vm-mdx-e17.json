@@ -11,9 +11,6 @@
   "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/toolsvms/linux_tools_vm.mdx",
   "tags": [],
   "version": "current",
-  "lastUpdatedBy": "Author",
-  "lastUpdatedAt": 1539502055,
-  "formattedLastUpdatedAt": "Oct 14, 2018",
   "sidebarPosition": 1,
   "frontMatter": {
     "title": "Linux Tools VM",

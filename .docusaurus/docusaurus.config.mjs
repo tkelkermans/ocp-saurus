@@ -27,8 +27,8 @@ export default {
       {
         "docs": {
           "routeBasePath": "/",
-          "showLastUpdateAuthor": true,
-          "showLastUpdateTime": true,
+          "showLastUpdateAuthor": false,
+          "showLastUpdateTime": false,
           "sidebarPath": "/Users/lakshmi/Documents/GitHub/ocp-saurus/sidebars.js",
           "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/"
         },

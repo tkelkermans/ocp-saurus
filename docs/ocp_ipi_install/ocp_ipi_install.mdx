@@ -597,25 +597,25 @@ In this section we will create our installation configuration files which will b
    ```bash
    vi install-config.yaml
    ```
-   ```md
-   ### Details element example
 
    <details>
-   <summary>Toggle me!</summary>
+   <summary>Toggle me for a file editing tip</summary>
    <div>
-      <div>This is the detailed content</div>
-      <br/>
-      <details>
-         <summary>
-         Nested toggle! Some surprise inside...
-         </summary>
-         <div>
-         😲😲😲😲😲
-         </div>
-      </details>
+   <body>
+   Using vim you can edit the ssl certificate block
+   <ol type="1">
+         <li>Move the cursor the to beigging on the line "-----BEGIN CERTIFICATE-----"</li>
+         <li>Use ``crtl`` + ``v`` keyboard combination to enter visual block mode </li>
+         <li>Select the lines until "-----END CERTIFICATE-----"</li>
+         <li>Press ``I``</li>
+         <li>Type in two spaces</li>
+         <li>Press ``esc`` key</li>
+         <li>Type ``wq!``</li>
+   </ol>
+   </body>
    </div>
    </details>
-   ```
+   
 
    ```yml {4-13,19,35} title="Sample install-config.yaml file - Edit the highlighted lines"
    apiVersion: v1
